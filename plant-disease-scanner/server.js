@@ -82,7 +82,8 @@ app.post('/api/analyze', async (req, res) => {
       res.json({
         success: true,
         disease: aiResponse.data.disease,
-        confidence: aiResponse.data.confidence || 95
+        confidence: aiResponse.data.confidence || 95,
+        top3Predictions: aiResponse.data.top_3_predictions || []
       });
     } catch (aiError) {
       console.error('AI Server Error:', aiError.message);

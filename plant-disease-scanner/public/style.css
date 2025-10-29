@@ -344,6 +344,35 @@ h1 {
     transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* Top 3 Predictions */
+.top-3-container {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    text-align: left;
+}
+
+.top-3-container h4 {
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    color: #2d3748;
+}
+
+.top-3-container ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.top-3-container li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.top-3-container li:last-child {
+    border-bottom: none;
+}
+
 /* View Documentation Button */
 .view-docs-btn {
     margin-top: 1.5rem;

@@ -217,6 +217,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         viewDocsBtn.style.display = 'block';
                     }
                     
+                    // Show top 3 predictions if available
+                    const top3Container = resultDisplay ? resultDisplay.querySelector('.top-3-predictions') : null;
+                    if (top3Container && data.top3Predictions && data.top3Predictions.length > 0) {
+                        let top3HTML = '<div class="top-3-container"><h4>Top 3 Predictions:</h4><ul>';
+                        data.top3Predictions.forEach((prediction, index) => {
+                            let predName = prediction.disease.replace(/___/g, ' - ');
+                            predName = predName.replace(/_/g, ' ');
+                            predName = predName.replace(/\w\S*/g, (txt) => {
+                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                            });
+                            const predConfidence = (prediction.confidence * 100).toFixed(2);
+                            top3HTML += `<li>${index + 1}. ${predName} (${predConfidence}%)</li>`;
+                        });
+                        top3HTML += '</ul></div>';
+                        top3Container.innerHTML = top3HTML;
+                        top3Container.style.display = 'block';
+                    }
+                    
                     // Show results and add success class
                     if (resultDisplay) {
                         resultDisplay.style.display = 'flex';
@@ -229,7 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const diseaseNameElement = resultDisplay ? resultDisplay.querySelector('.disease-name') : null;
                     const confidenceElement = resultDisplay ? resultDisplay.querySelector('.confidence') : null;
                     const confidenceLevel = resultDisplay ? resultDisplay.querySelector('.confidence-level') : null;
+                    const top3Container = resultDisplay ? resultDisplay.querySelector('.top-3-predictions') : null;
                     
+                    if (top3Container) top3Container.style.display = 'none';
                     if (diseaseNameElement) diseaseNameElement.textContent = 'Error';
                     if (confidenceElement) confidenceElement.textContent = data.error || 'Failed to analyze the image';
                     if (confidenceLevel) confidenceLevel.style.width = '0%';
@@ -261,7 +281,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const diseaseNameElement = resultDisplay ? resultDisplay.querySelector('.disease-name') : null;
                 const confidenceElement = resultDisplay ? resultDisplay.querySelector('.confidence') : null;
                 const confidenceLevel = resultDisplay ? resultDisplay.querySelector('.confidence-level') : null;
+                const top3Container = resultDisplay ? resultDisplay.querySelector('.top-3-predictions') : null;
                 
+                if (top3Container) top3Container.style.display = 'none';
                 if (diseaseNameElement) diseaseNameElement.textContent = 'Connection Error';
                 if (confidenceElement) confidenceElement.textContent = 'Failed to connect to the analysis server. Please check if the AI server is running.';
                 if (confidenceLevel) confidenceLevel.style.width = '0%';
