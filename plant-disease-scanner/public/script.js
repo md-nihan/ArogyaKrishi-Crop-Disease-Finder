@@ -99,17 +99,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         // Fetch weather alerts
                         fetch(`/api/weather-alerts?lat=${lat}&lon=${lon}`)
-                            .then(response => response.json())
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
                             .then(data => {
                                 if (data.success) {
                                     displayWeatherAlerts(data.alerts);
                                 } else {
-                                    weatherAlertsContent.innerHTML = '<div class="error">Failed to fetch weather alerts.</div>';
+                                    weatherAlertsContent.innerHTML = `<div class="error">${data.error || 'Failed to fetch weather alerts.'}</div>`;
                                 }
                             })
                             .catch(error => {
                                 console.error('Error fetching weather alerts:', error);
-                                weatherAlertsContent.innerHTML = '<div class="error">Failed to fetch weather alerts.</div>';
+                                weatherAlertsContent.innerHTML = '<div class="error">Failed to fetch weather alerts. Please try again later.</div>';
                             });
                     },
                     (error) => {
@@ -162,6 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     body: formData
                 });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
                 const data = await response.json();
 
@@ -222,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const confidenceLevel = resultDisplay ? resultDisplay.querySelector('.confidence-level') : null;
                     
                     if (diseaseNameElement) diseaseNameElement.textContent = 'Error';
-                    if (confidenceElement) confidenceElement.textContent = data.error;
+                    if (confidenceElement) confidenceElement.textContent = data.error || 'Failed to analyze the image';
                     if (confidenceLevel) confidenceLevel.style.width = '0%';
                     
                     // Hide documentation button on error
@@ -254,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const confidenceLevel = resultDisplay ? resultDisplay.querySelector('.confidence-level') : null;
                 
                 if (diseaseNameElement) diseaseNameElement.textContent = 'Connection Error';
-                if (confidenceElement) confidenceElement.textContent = 'Failed to connect to the analysis server';
+                if (confidenceElement) confidenceElement.textContent = 'Failed to connect to the analysis server. Please check if the AI server is running.';
                 if (confidenceLevel) confidenceLevel.style.width = '0%';
                 
                 // Hide documentation button on error
@@ -284,6 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchDiseaseInfo(diseaseName) {
         try {
             const response = await fetch(`/api/disease-info/${encodeURIComponent(diseaseName)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             
             if (response.ok) {

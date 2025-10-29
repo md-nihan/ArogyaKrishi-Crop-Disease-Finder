@@ -8,7 +8,10 @@ const DiseaseInfo = require('./models/DiseaseInfo');
 const Prediction = require('./models/Prediction');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+// Get AI server URL from environment variable or use default
+const AI_SERVER_URL = process.env.AI_SERVER_URL || 'http://localhost:5000';
 
 // Middleware
 app.use(express.json());
@@ -16,8 +19,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
 app.use(express.static('public'));
 
-// Connect to MongoDB Atlas
-mongoose.connect('mongodb+srv://nihan:Killer888beats@nihan.3jzvm5.mongodb.net/climate-sustainability?retryWrites=true&w=majority&appName=nihan');
+// Connect to MongoDB
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/plantDiseaseScanner';
+mongoose.connect(MONGODB_URI);
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.get('/', (req, res) => {
@@ -27,11 +34,6 @@ app.get('/', (req, res) => {
 // Route for history page
 app.get('/history', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'history.html'));
-});
-
-// Handle GET requests to /api/analyze by redirecting to the main page
-app.get('/api/analyze', (req, res) => {
-  res.redirect('/');
 });
 
 // API endpoint for analyzing plant images
@@ -53,7 +55,7 @@ app.post('/api/analyze', async (req, res) => {
         contentType: imageFile.mimetype
       });
       
-      const aiResponse = await axios.post('http://localhost:5000/predict', form, {
+      const aiResponse = await axios.post(`${AI_SERVER_URL}/predict`, form, {
         headers: {
           ...form.getHeaders()
         }
@@ -141,7 +143,7 @@ app.get('/api/weather-alerts', async (req, res) => {
     }
     
     // Get weather forecast from OpenWeatherMap
-    const OPENWEATHER_API_KEY = '465c63cc77ee43d692f4e8c7a0dc430a';
+    const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY || '465c63cc77ee43d692f4e8c7a0dc430a';
     const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`;
     
     const weatherResponse = await axios.get(weatherUrl);
@@ -310,6 +312,11 @@ app.get('/api/weather-alerts', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+// Handle GET requests to /api/analyze by redirecting to the main page
+app.get('/api/analyze', (req, res) => {
+  res.redirect('/');
+});
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
