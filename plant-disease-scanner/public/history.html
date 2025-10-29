@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArogyaKrishi: Prediction History</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ArogyaKrishi: Prediction History</h1>
+            <nav class="navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/history" class="nav-link active">History</a>
+            </nav>
+        </div>
+        
+        <div class="history-container">
+            <div class="history-header">
+                <h2>Your Prediction History</h2>
+                <button id="clear-history-btn" class="clear-history-btn">Clear History</button>
+            </div>
+            <div id="history-list" class="history-list">
+                <!-- History items will be loaded here -->
+                <div class="loading">Loading history...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="history.js"></script>
+</body>
+</html>

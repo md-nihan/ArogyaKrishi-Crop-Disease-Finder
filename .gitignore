@@ -1,0 +1,25 @@
+# Node.js dependencies
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Log files
+*.log
+
+# Environment variables
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Large dataset directories (excluded)
+datasets/
+data/
+New Plant Diseases Dataset(Augmented)/
